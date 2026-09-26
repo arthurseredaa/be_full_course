@@ -1,0 +1,19 @@
+{
+  "name": "chapter_2",
+  "version": "1.0.0",
+  "description": "Simple backend server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.14"
+  }
+}

@@ -1,0 +1,22 @@
+### data
+GET http://localhost:3000/api/data
+
+### homepage
+GET http://localhost:3000/
+
+### ADD USER
+POST http://localhost:3000/api/data
+Content-Type: application/json
+
+{
+  "name": "Gilgamish",
+  "age": 20
+}
+
+### DELETE USER
+DELETE http://localhost:3000/api/data
+Content-Type: application/json
+
+{
+  "name": "Gilgamish"
+}
