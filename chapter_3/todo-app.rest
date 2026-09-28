@@ -35,19 +35,17 @@ Authorization: Bearer {{token}}
 ### CREATE TODO
 POST http://localhost:3001/todos
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
-  "title": "Buy ether",
-  "complete": false
+  "title": "Buy ether"
 }
 
-### UPDATE TODO
-PATCH http://localhost:3001/todos/1
+### MARK TODO COMPLETED
+PATCH http://localhost:3001/todos/9
 Content-Type: application/json
-
-{
-  "completed": true
-}
+Authorization: Bearer {{token}}
 
 ### DELETE TODO
-DELETE http://localhost:3001/todos/1
+DELETE http://localhost:3001/todos/8
+Authorization: Bearer {{token}}

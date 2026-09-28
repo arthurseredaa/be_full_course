@@ -83,9 +83,9 @@ authRoutes.post('/login', async (req, res) => {
       })
     }
 
-    const isCorrectPassword = await bcrypt.compare(credentials.password, result.password)
+    const isPasswordValid = await bcrypt.compare(credentials.password, result.password)
 
-    if (isCorrectPassword) {
+    if (isPasswordValid) {
       const token = jwt.sign({
         id: result.id,
         email: credentials.email
