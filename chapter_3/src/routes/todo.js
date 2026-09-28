@@ -39,14 +39,17 @@ todoRoutes.post('/', (req, res) => {
 todoRoutes.patch('/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
-    const completed = Boolean(req.body.completed) ? 1 : 0;
 
     if (isNaN(id)) {
       return res.status(400).send('Invalid id in request parameters');
     }
 
+    if (typeof req.body.completed !== 'number') {
+      return res.status(400).send('Field completed must be a number');
+    }
+
     const updateTodo = db.prepare("UPDATE todos SET completed = $completed WHERE id = $id AND user_id=$user_id");
-    const row = updateTodo.run({id, user_id: req.user_id, completed});
+    const row = updateTodo.run({id, user_id: req.user_id, completed: req.body.completed});
 
     if (row.changes) {
       res.sendStatus(200);
@@ -60,6 +63,7 @@ todoRoutes.patch('/:id', (req, res) => {
     })
   }
 });
+
 todoRoutes.delete('/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
