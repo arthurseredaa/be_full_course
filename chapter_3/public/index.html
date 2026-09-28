@@ -141,8 +141,8 @@
             <div class="card todo-item">
                 <p>${todo.title}</p>
                 <div class="todo-buttons">
-                    <button onclick="markCompleted(${taskIndex})" ${todo.completed ? 'disabled' : ''}>
-                        <h6>Done</h6>
+                    <button onclick="updateTodo(${taskIndex})">
+                        <h6>${todo.completed ? 'Undone' : 'Done'}</h6>
                     </button>
                     <button onclick="deleteTodo(${taskIndex})">
                         <h6>Delete</h6>
@@ -261,7 +261,8 @@
     renderTodos()
   }
 
-  async function markCompleted(index) {
+  async function updateTodo(index) {
+    const todo = todos.find((item) => item.id === index)
     // set task complete status to true
     await fetch(apiBase + 'todos' + '/' + index, {
       method: 'PATCH',
@@ -269,6 +270,7 @@
         'Content-Type': 'application/json',
         'Authorization': token
       },
+      body: JSON.stringify({completed: todo?.completed ? 0 : 1})
     })
     fetchTodos()
   }

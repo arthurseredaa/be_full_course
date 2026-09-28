@@ -24,10 +24,10 @@ todoRoutes.post('/', (req, res) => {
       return res.status(400).send('Field title is required');
     }
 
-    const insertTodo = db.prepare("INSERT INTO todos (user_id, title, completed) VALUES ($user_id, $title, $completed)");
-    insertTodo.run({user_id: req.user_id, title, completed: 0});
+    const insertTodo = db.prepare("INSERT INTO todos (user_id, title, completed) VALUES ($user_id, $title, $completed) RETURNING *");
+    const row = insertTodo.get({user_id: req.user_id, title, completed: 0});
 
-    res.sendStatus(201)
+    res.status(201).send(row)
   } catch (error) {
     console.error(error);
     return res.status(500).send({
@@ -39,13 +39,14 @@ todoRoutes.post('/', (req, res) => {
 todoRoutes.patch('/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
+    const completed = Boolean(req.body.completed) ? 1 : 0;
 
     if (isNaN(id)) {
       return res.status(400).send('Invalid id in request parameters');
     }
 
     const updateTodo = db.prepare("UPDATE todos SET completed = $completed WHERE id = $id AND user_id=$user_id");
-    const row = updateTodo.run({id, user_id: req.user_id, completed: 1});
+    const row = updateTodo.run({id, user_id: req.user_id, completed});
 
     if (row.changes) {
       res.sendStatus(200);
