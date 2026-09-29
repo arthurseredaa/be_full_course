@@ -1,0 +1,51 @@
+### GET PAGE
+GET http://localhost:3001
+
+### REGISTER USER
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+  "email": "gilgamesh4@gmail.com",
+  "password": "123123"
+}
+
+> {%
+  client.global.set("token", response.body.token)
+%}
+
+### LOGIN USER
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "gilgamesh4@gmail.com",
+  "password": "123123"
+}
+
+> {%
+  client.global.set("token", response.body.token)
+%}
+
+### GET TODOS
+GET http://localhost:3001/todos
+Content-Type: application/json
+Authorization: {{token}}
+
+### CREATE TODO
+POST http://localhost:3001/todos
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "title": "Buy ether"
+}
+
+### MARK TODO COMPLETED
+PATCH http://localhost:3001/todos/9
+Content-Type: application/json
+Authorization: {{token}}
+
+### DELETE TODO
+DELETE http://localhost:3001/todos/8
+Authorization: {{token}}

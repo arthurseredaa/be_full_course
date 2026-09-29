@@ -1,0 +1,18 @@
+// use prisma-8
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  todos    Todo[]
+
+  created_at TimestamptzString @default(now())
+}
+
+model Todo {
+  id        Int     @id @default(autoincrement())
+  title     String
+  completed Boolean
+  user_id   Int
+  user      User    @relation(fields: [user_id], references: [id])
+}
