@@ -253,7 +253,7 @@
   async function fetchTodos() {
     isLoading = true
     const response = await fetch(apiBase + 'todos', {
-      headers: {'Authorization': token}
+      headers: {'Authorization': 'Bearer ' + token}
     })
     const todosData = await response.json()
     todos = todosData
@@ -268,7 +268,7 @@
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify({completed: !todo?.completed})
     })
@@ -280,7 +280,7 @@
     await fetch(apiBase + 'todos' + '/' + index, {
       method: 'DELETE',
       headers: {
-        'Authorization': token
+        'Authorization': 'Bearer ' + token
       },
     })
     fetchTodos()
@@ -299,7 +299,7 @@
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify({title})
     })

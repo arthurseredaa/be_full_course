@@ -1,30 +1,36 @@
-import { Body, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {CreateTodoDto} from './dto/create-todo.dto.js';
 import {UpdateTodoDto} from './dto/update-todo.dto.js';
 import {DatabaseService} from "../database/database.service.js";
 import {todosTable} from "../database/schema/todos.schema.js";
-import {eq} from "drizzle-orm";
+import {and, eq} from "drizzle-orm";
 
 @Injectable()
 export class TodosService {
     constructor(private readonly databaseService: DatabaseService) {
     }
 
-    create(createTodoDto: CreateTodoDto) {
-        return this.databaseService.db.insert(todosTable).values({
-            title: createTodoDto.title,
-            userId: 'eaeee260-dacf-4cf1-93aa-e618935c9532',
-        }).returning({
-            id: todosTable.id
-        })
+    create(userId: string, todo: CreateTodoDto) {
+        return this.databaseService.db
+          .insert(todosTable)
+          .values({
+            title: todo.title,
+            userId,
+          })
+          .returning({
+            id: todosTable.id,
+          });
     }
 
-    findAll() {
-        return this.databaseService.db.select().from(todosTable);
+    findAll(userId: string) {
+        return this.databaseService.db.select().from(todosTable).where(eq(todosTable.userId, userId));
     }
 
-    async findOne(id: string) {
-        const result = await this.databaseService.db.select().from(todosTable).where(eq(todosTable.id, id))
+    async findOne(userId: string, id: string) {
+        const result = await this.databaseService.db
+          .select()
+          .from(todosTable)
+          .where(and(eq(todosTable.id, id), eq(todosTable.userId, userId)));
 
       if (result.length === 0) {
         throw new NotFoundException(`Todo with id ${id} not found`);
@@ -33,12 +39,16 @@ export class TodosService {
       return result[0];
     }
 
-    async update(id: string, updateTodoDto: UpdateTodoDto) {
-        const result = await this.databaseService.db.update(todosTable).set({
-          completed: updateTodoDto.completed,
-        }).where(eq(todosTable.id, id)).returning({
-          id: todosTable.id,
-        })
+    async update(userId: string, id: string, todo: UpdateTodoDto) {
+        const result = await this.databaseService.db
+          .update(todosTable)
+          .set({
+            completed: todo.completed,
+          })
+          .where(and(eq(todosTable.id, id), eq(todosTable.userId, userId)))
+          .returning({
+            id: todosTable.id,
+          });
 
       if (result.length === 0) {
         throw new NotFoundException(`Todo with id ${id} not found`);
@@ -47,10 +57,13 @@ export class TodosService {
       return result[0];
     }
 
-    async remove(id: string) {
-        const result = await this.databaseService.db.delete(todosTable).where(eq(todosTable.id, id)).returning({
+    async remove(userId: string, id: string) {
+        const result = await this.databaseService.db
+          .delete(todosTable)
+          .where(and(eq(todosTable.id, id), eq(todosTable.userId, userId)))
+          .returning({
             id: todosTable.id
-        });
+          });
 
         if (result.length === 0) {
           throw new NotFoundException(`Todo with id ${id} not found`);
